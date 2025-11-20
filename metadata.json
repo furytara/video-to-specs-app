@@ -1,0 +1,5 @@
+{
+  "name": "Video Understanding",
+  "description": "Analyze application demo videos using Gemini 3.0 Pro to generate comprehensive development prompts and technical specifications.",
+  "requestFramePermissions": []
+}
