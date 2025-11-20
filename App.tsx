@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Header } from './components/Header';
 import { VideoInput } from './components/VideoInput';
 import { ResultsView } from './components/ResultsView';
@@ -11,15 +11,35 @@ const App: React.FC = () => {
   const [resultMarkdown, setResultMarkdown] = useState<string>("");
   const [errorMsg, setErrorMsg] = useState<string>("");
   const [additionalContext, setAdditionalContext] = useState("");
+  const [apiKey, setApiKey] = useState("");
+
+  useEffect(() => {
+    const storedKey = localStorage.getItem("gemini_api_key");
+    if (storedKey) {
+      setApiKey(storedKey);
+    }
+  }, []);
+
+  const handleApiKeyChange = (key: string) => {
+    setApiKey(key);
+    localStorage.setItem("gemini_api_key", key);
+  };
 
   const handleAnalyze = async () => {
     if (!videoFile || !videoFile.base64Data) return;
+    
+    if (!apiKey) {
+      setErrorMsg("Please enter your Gemini API Key in the header to proceed.");
+      setStatus(AnalysisStatus.ERROR);
+      return;
+    }
 
     setStatus(AnalysisStatus.ANALYZING);
     setErrorMsg("");
 
     try {
       const result = await analyzeVideo(
+        apiKey,
         videoFile.base64Data, 
         videoFile.file.type,
         additionalContext
@@ -43,7 +63,7 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-[#0f172a]">
-      <Header />
+      <Header apiKey={apiKey} onApiKeyChange={handleApiKeyChange} />
 
       <main className="flex-grow px-4 sm:px-6 lg:px-8 py-12 flex flex-col items-center">
         

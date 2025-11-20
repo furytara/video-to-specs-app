@@ -26,13 +26,13 @@ Write a single, highly detailed, copy-pasteable prompt that the user can feed in
 `;
 
 export const analyzeVideo = async (
+  apiKey: string,
   base64Video: string,
   mimeType: string,
   additionalContext: string = ""
 ): Promise<string> => {
-  const apiKey = process.env.API_KEY;
   if (!apiKey) {
-    throw new Error("API Key is missing in environment variables.");
+    throw new Error("API Key is missing. Please provide a valid Gemini API Key.");
   }
 
   const ai = new GoogleGenAI({ apiKey });
